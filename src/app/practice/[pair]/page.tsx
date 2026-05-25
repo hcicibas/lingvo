@@ -18,10 +18,10 @@ function parsePair(pair: string) {
   if (dashIndex !== -1) return null;
 
   for (let i = 1; i < parts.length; i++) {
-    const targetSlug = parts.slice(0, i).join("-");
-    const nativeSlug = parts.slice(i).join("-");
-    const target = findLanguage(targetSlug);
+    const nativeSlug = parts.slice(0, i).join("-");
+    const targetSlug = parts.slice(i).join("-");
     const native = findLanguage(nativeSlug);
+    const target = findLanguage(targetSlug);
     if (target && native && target.code !== native.code) {
       return { target, native };
     }
@@ -31,7 +31,7 @@ function parsePair(pair: string) {
 
 export function generateStaticParams() {
   return TOP_LANGUAGE_PAIRS.map((p) => ({
-    pair: `${p.target}-${p.native}`,
+    pair: `${p.native}-${p.target}`,
   }));
 }
 
