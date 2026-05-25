@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, nativeLanguage, targetLanguage, level, sessionId } =
+    const { nativeLanguage, targetLanguage, level, sessionId } =
       await request.json();
 
     if (!nativeLanguage || !targetLanguage || !level || !sessionId) {
