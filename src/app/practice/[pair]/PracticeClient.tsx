@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, ReactNode } from "react";
 import { SUPPORTED_LANGUAGES, Language } from "@/constants/languages";
 import StartSection from "@/components/StartSection";
 import QuizSection, { Sentence } from "@/components/QuizSection";
@@ -13,11 +13,15 @@ type AppState = "setup" | "quiz" | "result";
 interface PracticeClientProps {
   targetCode: string;
   nativeCode: string;
+  localizedTitle?: string;
+  seoContent?: ReactNode;
 }
 
 export default function PracticeClient({
   targetCode,
   nativeCode,
+  localizedTitle,
+  seoContent,
 }: PracticeClientProps) {
   const presetTarget = useMemo(
     () => SUPPORTED_LANGUAGES.find((l) => l.code === targetCode) ?? null,
@@ -88,11 +92,11 @@ export default function PracticeClient({
       {appState === "setup" && (
         <>
           <section className="pt-16 pb-4 px-4 text-center">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-              Practice {presetTarget?.name} {presetTarget?.flag}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 max-w-2xl mx-auto">
+              {localizedTitle || `Practice ${presetTarget?.name} ${presetTarget?.flag}`}
             </h1>
             <p className="text-muted">
-              With {presetNative?.flag} {presetNative?.name} translations
+              {presetTarget?.flag} {presetTarget?.name} → {presetNative?.flag} {presetNative?.name}
             </p>
           </section>
           <StartSection
@@ -115,6 +119,7 @@ export default function PracticeClient({
             </div>
           )}
           <FeaturesSection />
+          {seoContent}
         </>
       )}
 

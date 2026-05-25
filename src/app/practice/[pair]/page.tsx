@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SUPPORTED_LANGUAGES } from "@/constants/languages";
 import { SITE_URL, SITE_NAME, TOP_LANGUAGE_PAIRS } from "@/constants/seo";
+import { getPracticeContent } from "@/constants/practiceContent";
+import PracticePageSEO from "@/components/PracticePageSEO";
 import PracticeClient from "./PracticeClient";
 
 function findLanguage(slug: string) {
@@ -43,8 +45,9 @@ export async function generateMetadata({
   if (!parsed) return {};
 
   const { target, native } = parsed;
-  const title = `Practice ${target.name} with ${native.name} Translations`;
-  const description = `Learn ${target.name} with AI-generated sentences and ${native.name} translations. CEFR-based exercises from A1 beginner to C2 mastery.`;
+  const content = getPracticeContent(pair);
+  const title = content?.title ?? `Practice ${target.name} with ${native.name} Translations`;
+  const description = content?.description ?? `Learn ${target.name} with AI-generated sentences and ${native.name} translations. CEFR-based exercises from A1 beginner to C2 mastery.`;
   const url = `${SITE_URL}/practice/${pair}`;
 
   return {
@@ -84,12 +87,13 @@ export default async function PracticePage({
   if (!parsed) notFound();
 
   const { target, native } = parsed;
+  const content = getPracticeContent(pair);
 
-  const jsonLd = {
+  const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: `${target.name} Practice with ${native.name} Translations`,
-    description: `AI-generated ${target.name} sentence practice for ${native.name} speakers. CEFR levels A1 to C2.`,
+    name: content?.title ?? `${target.name} Practice with ${native.name} Translations`,
+    description: content?.description ?? `AI-generated ${target.name} sentence practice for ${native.name} speakers. CEFR levels A1 to C2.`,
     provider: {
       "@type": "Organization",
       name: SITE_NAME,
@@ -99,15 +103,46 @@ export default async function PracticePage({
     availableLanguage: [target.code, native.code],
   };
 
+  const faqJsonLd = content
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: content.faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }
+    : null;
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       <PracticeClient
         targetCode={target.code}
         nativeCode={native.code}
+        localizedTitle={content?.title}
+        seoContent={
+          content ? (
+            <PracticePageSEO
+              content={content}
+              target={target}
+              native={native}
+            />
+          ) : undefined
+        }
       />
     </>
   );
