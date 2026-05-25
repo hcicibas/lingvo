@@ -1,4 +1,4 @@
-export const SITE_URL = "https://lingvo.app";
+export const SITE_URL = "https://lingvo.online";
 export const SITE_NAME = "Lingvo";
 
 export const TOP_LANGUAGE_PAIRS = [
