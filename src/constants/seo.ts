@@ -2,7 +2,7 @@ export const SITE_URL = "https://lingvo.app";
 export const SITE_NAME = "Lingvo";
 
 export const TOP_LANGUAGE_PAIRS = [
-  { native: "turkish", target: "english" },
+  // English speakers learning other languages
   { native: "english", target: "turkish" },
   { native: "english", target: "spanish" },
   { native: "english", target: "french" },
@@ -27,6 +27,31 @@ export const TOP_LANGUAGE_PAIRS = [
   { native: "english", target: "ukrainian" },
   { native: "english", target: "czech" },
   { native: "english", target: "hungarian" },
+  // Other speakers learning English
+  { native: "turkish", target: "english" },
+  { native: "spanish", target: "english" },
+  { native: "french", target: "english" },
+  { native: "german", target: "english" },
+  { native: "japanese", target: "english" },
+  { native: "korean", target: "english" },
+  { native: "italian", target: "english" },
+  { native: "portuguese", target: "english" },
+  { native: "russian", target: "english" },
+  { native: "arabic", target: "english" },
+  { native: "chinese", target: "english" },
+  { native: "dutch", target: "english" },
+  { native: "polish", target: "english" },
+  { native: "swedish", target: "english" },
+  { native: "norwegian", target: "english" },
+  { native: "danish", target: "english" },
+  { native: "greek", target: "english" },
+  { native: "hebrew", target: "english" },
+  { native: "hindi", target: "english" },
+  { native: "persian", target: "english" },
+  { native: "romanian", target: "english" },
+  { native: "ukrainian", target: "english" },
+  { native: "czech", target: "english" },
+  { native: "hungarian", target: "english" },
 ] as const;
 
 export const FAQ_ITEMS = [

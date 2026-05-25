@@ -17,13 +17,13 @@ export default function Footer() {
           <div className="flex flex-wrap justify-center gap-2">
             {TOP_LANGUAGE_PAIRS.map((pair) => (
               <a
-                key={`${pair.target}-${pair.native}`}
-                href={`/practice/${pair.target}-${pair.native}`}
+                key={`${pair.native}-${pair.target}`}
+                href={`/practice/${pair.native}-${pair.target}`}
                 className="text-xs px-3 py-1.5 bg-card border border-border hover:border-accent/30 rounded-full transition-colors text-muted hover:text-white"
               >
-                {pair.target.charAt(0).toUpperCase() + pair.target.slice(1)}
-                {" → "}
                 {pair.native.charAt(0).toUpperCase() + pair.native.slice(1)}
+                {" → "}
+                {pair.target.charAt(0).toUpperCase() + pair.target.slice(1)}
               </a>
             ))}
           </div>
