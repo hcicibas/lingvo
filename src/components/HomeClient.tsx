@@ -2,12 +2,14 @@
 
 import { useState, useCallback } from "react";
 import { Language } from "@/constants/languages";
+import { hasReachedLimit, incrementUsage } from "@/lib/usage-limit";
 import HeroSection from "@/components/HeroSection";
 import StartSection from "@/components/StartSection";
 import QuizSection, { Sentence } from "@/components/QuizSection";
 import ResultSection from "@/components/ResultSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import LanguagesSection from "@/components/LanguagesSection";
+import UsageLimitModal from "@/components/UsageLimitModal";
 import Footer from "@/components/Footer";
 
 type AppState = "setup" | "quiz" | "result";
@@ -21,9 +23,15 @@ export default function HomeClient() {
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   const generateSentences = useCallback(async () => {
     if (!nativeLanguage || !targetLanguage || !level) return;
+
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -44,6 +52,7 @@ export default function HomeClient() {
       if (!res.ok) throw new Error("Failed to generate sentences");
 
       const data = await res.json();
+      incrementUsage();
       setSentences(data.sentences);
       setAppState("quiz");
     } catch {
@@ -122,6 +131,12 @@ export default function HomeClient() {
       )}
 
       <Footer />
+
+      <UsageLimitModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        nativeLanguage={nativeLanguage}
+      />
     </main>
   );
 }

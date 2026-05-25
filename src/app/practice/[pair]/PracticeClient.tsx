@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useMemo, ReactNode } from "react";
 import { SUPPORTED_LANGUAGES, Language } from "@/constants/languages";
+import { hasReachedLimit, incrementUsage } from "@/lib/usage-limit";
 import StartSection from "@/components/StartSection";
 import QuizSection, { Sentence } from "@/components/QuizSection";
 import ResultSection from "@/components/ResultSection";
 import FeaturesSection from "@/components/FeaturesSection";
+import UsageLimitModal from "@/components/UsageLimitModal";
 import Footer from "@/components/Footer";
 
 type AppState = "setup" | "quiz" | "result";
@@ -40,9 +42,15 @@ export default function PracticeClient({
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   const generateSentences = useCallback(async () => {
     if (!nativeLanguage || !targetLanguage || !level) return;
+
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -63,6 +71,7 @@ export default function PracticeClient({
       if (!res.ok) throw new Error("Failed to generate sentences");
 
       const data = await res.json();
+      incrementUsage();
       setSentences(data.sentences);
       setAppState("quiz");
     } catch {
@@ -158,6 +167,12 @@ export default function PracticeClient({
       )}
 
       <Footer />
+
+      <UsageLimitModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        nativeLanguage={nativeLanguage}
+      />
     </main>
   );
 }
