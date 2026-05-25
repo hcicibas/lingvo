@@ -3,6 +3,7 @@ export const SITE_NAME = "Lingvo";
 
 export const TOP_LANGUAGE_PAIRS = [
   { native: "turkish", target: "english" },
+  { native: "english", target: "turkish" },
   { native: "english", target: "spanish" },
   { native: "english", target: "french" },
   { native: "english", target: "german" },
@@ -10,8 +11,22 @@ export const TOP_LANGUAGE_PAIRS = [
   { native: "english", target: "korean" },
   { native: "english", target: "italian" },
   { native: "english", target: "portuguese" },
-  { native: "english", target: "chinese" },
+  { native: "english", target: "russian" },
   { native: "english", target: "arabic" },
+  { native: "english", target: "chinese" },
+  { native: "english", target: "dutch" },
+  { native: "english", target: "polish" },
+  { native: "english", target: "swedish" },
+  { native: "english", target: "norwegian" },
+  { native: "english", target: "danish" },
+  { native: "english", target: "greek" },
+  { native: "english", target: "hebrew" },
+  { native: "english", target: "hindi" },
+  { native: "english", target: "persian" },
+  { native: "english", target: "romanian" },
+  { native: "english", target: "ukrainian" },
+  { native: "english", target: "czech" },
+  { native: "english", target: "hungarian" },
 ] as const;
 
 export const FAQ_ITEMS = [
