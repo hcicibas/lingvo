@@ -89,9 +89,23 @@ export default function PracticeClient({
 
   return (
     <main className="min-h-screen bg-bg">
+      <nav className="sticky top-0 z-50 bg-bg/80 backdrop-blur-lg border-b border-border">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center">
+          <a
+            href="/"
+            className="flex items-center gap-2 text-white font-bold text-lg hover:text-accent transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Lingvo
+          </a>
+        </div>
+      </nav>
+
       {appState === "setup" && (
         <>
-          <section className="pt-16 pb-4 px-4 text-center">
+          <section className="pt-10 pb-4 px-4 text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 max-w-2xl mx-auto">
               {localizedTitle || `Practice ${presetTarget?.name} ${presetTarget?.flag}`}
             </h1>
