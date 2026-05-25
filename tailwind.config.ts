@@ -9,8 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        bg: "#0a0a0f",
+        card: "#13131f",
+        "card-hover": "#1a1a2e",
+        accent: "#6366f1",
+        "accent-hover": "#818cf8",
+        muted: "#94a3b8",
+        border: "#1e1e30",
       },
     },
   },
