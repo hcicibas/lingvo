@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useCallback, useMemo, ReactNode } from "react";
+import { useState, useCallback, useEffect, useMemo, ReactNode } from "react";
 import { SUPPORTED_LANGUAGES, Language } from "@/constants/languages";
+import { hasReachedLimit, incrementUsage } from "@/lib/usage-limit";
+import { loadFormValues, saveFormValues } from "@/lib/form-storage";
 import StartSection from "@/components/StartSection";
 import QuizSection, { Sentence } from "@/components/QuizSection";
 import ResultSection from "@/components/ResultSection";
 import FeaturesSection from "@/components/FeaturesSection";
+import UsageLimitModal from "@/components/UsageLimitModal";
 import Footer from "@/components/Footer";
 
 type AppState = "setup" | "quiz" | "result";
@@ -40,9 +43,31 @@ export default function PracticeClient({
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
+
+  useEffect(() => {
+    const saved = loadFormValues();
+    if (saved.name) setName(saved.name);
+    if (saved.level) setLevel(saved.level);
+    setLimitReached(hasReachedLimit());
+  }, []);
 
   const generateSentences = useCallback(async () => {
     if (!nativeLanguage || !targetLanguage || !level) return;
+
+    if (hasReachedLimit()) {
+      setLimitReached(true);
+      setShowLimitModal(true);
+      return;
+    }
+
+    saveFormValues({
+      name,
+      nativeCode: nativeLanguage.code,
+      targetCode: targetLanguage.code,
+      level,
+    });
 
     setLoading(true);
     setError("");
@@ -63,6 +88,8 @@ export default function PracticeClient({
       if (!res.ok) throw new Error("Failed to generate sentences");
 
       const data = await res.json();
+      incrementUsage();
+      setLimitReached(true);
       setSentences(data.sentences);
       setAppState("quiz");
     } catch {
@@ -73,12 +100,20 @@ export default function PracticeClient({
   }, [name, nativeLanguage, targetLanguage, level]);
 
   const handlePracticeAgain = useCallback(() => {
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
     setSentences([]);
     setAppState("setup");
     generateSentences();
   }, [generateSentences]);
 
   const handleChangeLevel = useCallback(() => {
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
     setSentences([]);
     setLevel("");
     setAppState("setup");
@@ -124,6 +159,7 @@ export default function PracticeClient({
             setLevel={setLevel}
             onStart={generateSentences}
             loading={loading}
+            limitReached={limitReached}
           />
           {error && (
             <div className="max-w-2xl mx-auto px-4 -mt-12 mb-8">
@@ -154,10 +190,17 @@ export default function PracticeClient({
           level={level}
           onPracticeAgain={handlePracticeAgain}
           onChangeLevel={handleChangeLevel}
+          limitReached={limitReached}
         />
       )}
 
       <Footer />
+
+      <UsageLimitModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        nativeLanguage={nativeLanguage}
+      />
     </main>
   );
 }

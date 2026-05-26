@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Language } from "@/constants/languages";
 import { CEFR_LEVELS } from "@/constants/levels";
+import { LIMIT_TRANSLATIONS } from "@/constants/limitTranslations";
 import LanguageSelector from "./LanguageSelector";
 
 interface StartSectionProps {
@@ -16,6 +18,7 @@ interface StartSectionProps {
   setLevel: (level: string) => void;
   onStart: () => void;
   loading: boolean;
+  limitReached?: boolean;
 }
 
 const stepVariants = {
@@ -38,6 +41,7 @@ export default function StartSection({
   setLevel,
   onStart,
   loading,
+  limitReached = false,
 }: StartSectionProps) {
   const isReady = name.trim() && nativeLanguage && targetLanguage && level;
 
@@ -134,34 +138,84 @@ export default function StartSection({
             </motion.div>
 
             <motion.div custom={4} variants={stepVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-              <motion.button
-                type="button"
-                whileHover={isReady ? { scale: 1.02 } : {}}
-                whileTap={isReady ? { scale: 0.98 } : {}}
-                onClick={onStart}
-                disabled={!isReady || loading}
-                className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
-                  isReady && !loading
-                    ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
-                    : "bg-border text-muted/40 cursor-not-allowed"
-                }`}
-              >
-                {loading ? (
-                  <span className="inline-flex items-center gap-2">
-                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Generating sentences...
-                  </span>
-                ) : (
-                  "Start Practice"
-                )}
-              </motion.button>
+              {limitReached ? (
+                <LimitBanner
+                  langCode={nativeLanguage?.code ?? "en"}
+                />
+              ) : (
+                <motion.button
+                  type="button"
+                  whileHover={isReady ? { scale: 1.02 } : {}}
+                  whileTap={isReady ? { scale: 0.98 } : {}}
+                  onClick={onStart}
+                  disabled={!isReady || loading}
+                  className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
+                    isReady && !loading
+                      ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
+                      : "bg-border text-muted/40 cursor-not-allowed"
+                  }`}
+                >
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Generating sentences...
+                    </span>
+                  ) : (
+                    "Start Practice"
+                  )}
+                </motion.button>
+              )}
             </motion.div>
           </div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function LimitBanner({ langCode }: { langCode: string }) {
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const lt = LIMIT_TRANSLATIONS[langCode] ?? LIMIT_TRANSLATIONS.en;
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 text-center">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm font-semibold text-amber-400">{lt.title}</p>
+        </div>
+        <p className="text-xs text-muted">{lt.message}</p>
+      </div>
+
+      {!showComingSoon ? (
+        <motion.button
+          type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setShowComingSoon(true)}
+          className="w-full py-4 rounded-xl text-lg font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg shadow-amber-500/20 transition-all min-h-[56px]"
+        >
+          <span className="inline-flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            {lt.upgrade} &rarr;
+          </span>
+        </motion.button>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full py-4 rounded-xl text-sm font-medium bg-amber-500/10 border border-amber-500/20 text-amber-400 text-center"
+        >
+          {lt.comingSoon}
+        </motion.div>
+      )}
+    </div>
   );
 }
