@@ -16,6 +16,7 @@ interface StartSectionProps {
   setLevel: (level: string) => void;
   onStart: () => void;
   loading: boolean;
+  limitReached?: boolean;
 }
 
 const stepVariants = {
@@ -38,6 +39,7 @@ export default function StartSection({
   setLevel,
   onStart,
   loading,
+  limitReached = false,
 }: StartSectionProps) {
   const isReady = name.trim() && nativeLanguage && targetLanguage && level;
 
@@ -134,30 +136,47 @@ export default function StartSection({
             </motion.div>
 
             <motion.div custom={4} variants={stepVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-              <motion.button
-                type="button"
-                whileHover={isReady ? { scale: 1.02 } : {}}
-                whileTap={isReady ? { scale: 0.98 } : {}}
-                onClick={onStart}
-                disabled={!isReady || loading}
-                className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
-                  isReady && !loading
-                    ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
-                    : "bg-border text-muted/40 cursor-not-allowed"
-                }`}
-              >
-                {loading ? (
+              {limitReached ? (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={onStart}
+                  className="w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] bg-gradient-to-r from-amber-500/80 to-orange-500/80 hover:from-amber-500 hover:to-orange-500 text-white shadow-lg shadow-amber-500/20"
+                >
                   <span className="inline-flex items-center gap-2">
-                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
-                    Generating sentences...
+                    Upgrade to Pro
                   </span>
-                ) : (
-                  "Start Practice"
-                )}
-              </motion.button>
+                </motion.button>
+              ) : (
+                <motion.button
+                  type="button"
+                  whileHover={isReady ? { scale: 1.02 } : {}}
+                  whileTap={isReady ? { scale: 0.98 } : {}}
+                  onClick={onStart}
+                  disabled={!isReady || loading}
+                  className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
+                    isReady && !loading
+                      ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
+                      : "bg-border text-muted/40 cursor-not-allowed"
+                  }`}
+                >
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Generating sentences...
+                    </span>
+                  ) : (
+                    "Start Practice"
+                  )}
+                </motion.button>
+              )}
             </motion.div>
           </div>
         </motion.div>

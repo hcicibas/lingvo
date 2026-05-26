@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Language } from "@/constants/languages";
 import { hasReachedLimit, incrementUsage } from "@/lib/usage-limit";
+import { loadFormValues, saveFormValues } from "@/lib/form-storage";
 import HeroSection from "@/components/HeroSection";
 import StartSection from "@/components/StartSection";
 import QuizSection, { Sentence } from "@/components/QuizSection";
@@ -24,14 +25,32 @@ export default function HomeClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
+
+  useEffect(() => {
+    const saved = loadFormValues();
+    if (saved.name) setName(saved.name);
+    if (saved.nativeLanguage) setNativeLanguage(saved.nativeLanguage);
+    if (saved.targetLanguage) setTargetLanguage(saved.targetLanguage);
+    if (saved.level) setLevel(saved.level);
+    setLimitReached(hasReachedLimit());
+  }, []);
 
   const generateSentences = useCallback(async () => {
     if (!nativeLanguage || !targetLanguage || !level) return;
 
     if (hasReachedLimit()) {
+      setLimitReached(true);
       setShowLimitModal(true);
       return;
     }
+
+    saveFormValues({
+      name,
+      nativeCode: nativeLanguage.code,
+      targetCode: targetLanguage.code,
+      level,
+    });
 
     setLoading(true);
     setError("");
@@ -53,6 +72,7 @@ export default function HomeClient() {
 
       const data = await res.json();
       incrementUsage();
+      setLimitReached(true);
       setSentences(data.sentences);
       setAppState("quiz");
     } catch {
@@ -63,12 +83,20 @@ export default function HomeClient() {
   }, [name, nativeLanguage, targetLanguage, level]);
 
   const handlePracticeAgain = useCallback(() => {
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
     setSentences([]);
     setAppState("setup");
     generateSentences();
   }, [generateSentences]);
 
   const handleChangeLevel = useCallback(() => {
+    if (hasReachedLimit()) {
+      setShowLimitModal(true);
+      return;
+    }
     setSentences([]);
     setLevel("");
     setAppState("setup");
@@ -97,6 +125,7 @@ export default function HomeClient() {
             setLevel={setLevel}
             onStart={generateSentences}
             loading={loading}
+            limitReached={limitReached}
           />
           {error && (
             <div className="max-w-2xl mx-auto px-4 -mt-12 mb-8">
