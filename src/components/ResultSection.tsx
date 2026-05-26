@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Language } from "@/constants/languages";
 import { getUIStrings, interpolate } from "@/constants/uiTranslations";
+import { LIMIT_TRANSLATIONS } from "@/constants/limitTranslations";
 
 interface ResultSectionProps {
   name: string;
@@ -12,6 +13,7 @@ interface ResultSectionProps {
   level: string;
   onPracticeAgain: () => void;
   onChangeLevel: () => void;
+  limitReached: boolean;
 }
 
 export default function ResultSection({
@@ -21,8 +23,11 @@ export default function ResultSection({
   level,
   onPracticeAgain,
   onChangeLevel,
+  limitReached,
 }: ResultSectionProps) {
   const t = useMemo(() => getUIStrings(nativeLanguage.code), [nativeLanguage.code]);
+  const lt = LIMIT_TRANSLATIONS[nativeLanguage.code] ?? LIMIT_TRANSLATIONS.en;
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   return (
     <section className="min-h-screen flex items-center py-20 px-4">
@@ -77,31 +82,85 @@ export default function ResultSection({
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-3"
-          >
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onPracticeAgain}
-              className="flex-1 py-4 bg-accent hover:bg-accent-hover text-white rounded-xl font-semibold transition-colors shadow-lg shadow-accent/20 min-h-[52px]"
+          {limitReached ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
             >
-              {t.practiceAgain}
-            </motion.button>
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onChangeLevel}
-              className="flex-1 py-4 bg-border hover:bg-card-hover text-muted rounded-xl font-semibold transition-colors min-h-[52px]"
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 mb-5">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm font-semibold text-amber-400">{lt.title}</p>
+                </div>
+                <p className="text-xs text-muted">{lt.message}</p>
+              </div>
+
+              <div className="space-y-3">
+                {!showComingSoon ? (
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowComingSoon(true)}
+                    className="w-full py-4 rounded-xl text-lg font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg shadow-amber-500/20 transition-all min-h-[52px]"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      {lt.upgrade} &rarr;
+                    </span>
+                  </motion.button>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="w-full py-4 rounded-xl text-sm font-medium bg-amber-500/10 border border-amber-500/20 text-amber-400 text-center"
+                  >
+                    {lt.comingSoon}
+                  </motion.div>
+                )}
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => window.location.href = "/"}
+                  className="w-full py-4 bg-border hover:bg-card-hover text-muted rounded-xl font-semibold transition-colors min-h-[52px]"
+                >
+                  {lt.comeBack}
+                </motion.button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-3"
             >
-              {t.changeLevel}
-            </motion.button>
-          </motion.div>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onPracticeAgain}
+                className="flex-1 py-4 bg-accent hover:bg-accent-hover text-white rounded-xl font-semibold transition-colors shadow-lg shadow-accent/20 min-h-[52px]"
+              >
+                {t.practiceAgain}
+              </motion.button>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onChangeLevel}
+                className="flex-1 py-4 bg-border hover:bg-card-hover text-muted rounded-xl font-semibold transition-colors min-h-[52px]"
+              >
+                {t.changeLevel}
+              </motion.button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>

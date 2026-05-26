@@ -190,6 +190,7 @@ export default function PracticeClient({
           level={level}
           onPracticeAgain={handlePracticeAgain}
           onChangeLevel={handleChangeLevel}
+          limitReached={limitReached}
         />
       )}
 

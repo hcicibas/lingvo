@@ -156,6 +156,7 @@ export default function HomeClient() {
           level={level}
           onPracticeAgain={handlePracticeAgain}
           onChangeLevel={handleChangeLevel}
+          limitReached={limitReached}
         />
       )}
 
