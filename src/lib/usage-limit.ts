@@ -31,5 +31,5 @@ export function incrementUsage(): void {
 }
 
 export function hasReachedLimit(): boolean {
-  return getUsage().count >= 1;
+  return getUsage().count >= 3;
 }
