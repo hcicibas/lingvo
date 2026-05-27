@@ -37,6 +37,14 @@ export default function HeroSection() {
         transition={{ duration: 1, ease: "easeOut" }}
         className="max-w-4xl w-full"
       >
+        <motion.img
+          src="/logo.svg"
+          alt="Lingvo"
+          className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 sm:mb-8 rounded-2xl shadow-lg shadow-accent/20"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        />
         <h1 className="text-[1.75rem] leading-snug sm:text-5xl md:text-7xl sm:leading-tight font-bold mb-4 sm:mb-6">
           <span className="text-white">Learn Any Language</span>
           <br />
