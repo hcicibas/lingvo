@@ -92,6 +92,7 @@ export default function PracticeClient({
       setLimitReached(true);
       setSentences(data.sentences);
       setAppState("quiz");
+      window.scrollTo(0, 0);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
