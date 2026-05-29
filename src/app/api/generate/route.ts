@@ -51,7 +51,9 @@ export async function POST(request: NextRequest) {
         },
         {
           role: "user",
-          content: `Generate 10 sentences in ${targetLanguage} for a ${level} CEFR level learner whose native language is ${nativeLanguage}.
+          content: `Generate 10 sentences in ${nativeLanguage} for a ${level} CEFR level learner who wants to practice ${targetLanguage}.
+
+The learner's native language is ${nativeLanguage}. Show the sentence in ${nativeLanguage} and provide the correct translation in ${targetLanguage}.
 
 Rules:
 - Each sentence must have a DIFFERENT grammatical structure
@@ -59,7 +61,9 @@ Rules:
 - Vary types: questions, negatives, positives, commands
 - Natural real-life sentences, not textbook
 - Topics: daily life, work, travel, emotions, food, technology, relationships, nature
-- Translation must be in ${nativeLanguage}
+- The "native" field is the sentence in ${nativeLanguage} (shown as the question)
+- The "target" field is the correct translation in ${targetLanguage} (shown as the answer)
+- The "hint" field is a grammar tip in ${nativeLanguage} about the ${targetLanguage} translation
 
 Session ID: ${sessionId}-${Date.now()}
 

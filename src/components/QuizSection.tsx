@@ -33,7 +33,7 @@ export default function QuizSection({
   const progress = currentIndex + 1;
   const total = sentences.length;
 
-  const speak = useCallback(() => {
+  const speakTarget = useCallback(() => {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(current.target);
@@ -89,31 +89,15 @@ export default function QuizSection({
               transition={{ duration: 0.35, ease: "easeOut" }}
               className="text-center mb-10"
             >
-              <div className="flex items-center justify-center gap-3 mb-8">
-                <p
-                  className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white leading-relaxed"
-                  dir={targetLanguage.rtl ? "rtl" : "ltr"}
-                >
-                  {current.target}
-                </p>
-                <button
-                  type="button"
-                  onClick={speak}
-                  className="flex-shrink-0 p-3 rounded-full hover:bg-accent/10 transition-colors"
-                  title="Listen"
-                >
-                  <svg className="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                    />
-                  </svg>
-                </button>
-              </div>
+              {/* Question: sentence in native language */}
+              <p
+                className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white leading-relaxed mb-8"
+                dir={nativeLanguage.rtl ? "rtl" : "ltr"}
+              >
+                {current.native}
+              </p>
 
-              {/* Translation */}
+              {/* Answer: translation in target language */}
               {!showTranslation ? (
                 <motion.button
                   type="button"
@@ -130,7 +114,29 @@ export default function QuizSection({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
                 >
-                  <p className="text-lg text-muted mb-3">{current.native}</p>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <p
+                      className="text-lg text-accent font-medium"
+                      dir={targetLanguage.rtl ? "rtl" : "ltr"}
+                    >
+                      {current.target}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={speakTarget}
+                      className="flex-shrink-0 p-2 rounded-full hover:bg-accent/10 transition-colors"
+                      title="Listen"
+                    >
+                      <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                   <p className="text-sm text-muted/50 italic">{current.hint}</p>
                 </motion.div>
               )}
