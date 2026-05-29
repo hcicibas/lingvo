@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Language } from "@/constants/languages";
 import { CEFR_LEVELS } from "@/constants/levels";
 import { LIMIT_TRANSLATIONS } from "@/constants/limitTranslations";
+import { applyPromo } from "@/lib/usage-limit";
 import LanguageSelector from "./LanguageSelector";
 
 interface StartSectionProps {
@@ -19,6 +20,7 @@ interface StartSectionProps {
   onStart: () => void;
   loading: boolean;
   limitReached?: boolean;
+  onPromoApplied?: () => void;
 }
 
 const stepVariants = {
@@ -42,6 +44,7 @@ export default function StartSection({
   onStart,
   loading,
   limitReached = false,
+  onPromoApplied,
 }: StartSectionProps) {
   const isReady = name.trim() && nativeLanguage && targetLanguage && level;
 
@@ -141,32 +144,36 @@ export default function StartSection({
               {limitReached ? (
                 <LimitBanner
                   langCode={nativeLanguage?.code ?? "en"}
+                  onPromoApplied={onPromoApplied}
                 />
               ) : (
-                <motion.button
-                  type="button"
-                  whileHover={isReady ? { scale: 1.02 } : {}}
-                  whileTap={isReady ? { scale: 0.98 } : {}}
-                  onClick={onStart}
-                  disabled={!isReady || loading}
-                  className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
-                    isReady && !loading
-                      ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
-                      : "bg-border text-muted/40 cursor-not-allowed"
-                  }`}
-                >
-                  {loading ? (
-                    <span className="inline-flex items-center gap-2">
-                      <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Generating sentences...
-                    </span>
-                  ) : (
-                    "Start Practice"
-                  )}
-                </motion.button>
+                <>
+                  <motion.button
+                    type="button"
+                    whileHover={isReady ? { scale: 1.02 } : {}}
+                    whileTap={isReady ? { scale: 0.98 } : {}}
+                    onClick={onStart}
+                    disabled={!isReady || loading}
+                    className={`w-full py-4 rounded-xl text-lg font-semibold transition-all min-h-[56px] ${
+                      isReady && !loading
+                        ? "bg-accent hover:bg-accent-hover text-white shadow-lg shadow-accent/20"
+                        : "bg-border text-muted/40 cursor-not-allowed"
+                    }`}
+                  >
+                    {loading ? (
+                      <span className="inline-flex items-center gap-2">
+                        <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Generating sentences...
+                      </span>
+                    ) : (
+                      "Start Practice"
+                    )}
+                  </motion.button>
+                  <PromoCodeInput onPromoApplied={onPromoApplied} />
+                </>
               )}
             </motion.div>
           </div>
@@ -176,7 +183,7 @@ export default function StartSection({
   );
 }
 
-function LimitBanner({ langCode }: { langCode: string }) {
+function LimitBanner({ langCode, onPromoApplied }: { langCode: string; onPromoApplied?: () => void }) {
   const [showComingSoon, setShowComingSoon] = useState(false);
   const lt = LIMIT_TRANSLATIONS[langCode] ?? LIMIT_TRANSLATIONS.en;
 
@@ -215,6 +222,71 @@ function LimitBanner({ langCode }: { langCode: string }) {
         >
           {lt.comingSoon}
         </motion.div>
+      )}
+
+      <PromoCodeInput onPromoApplied={onPromoApplied} />
+    </div>
+  );
+}
+
+function PromoCodeInput({ onPromoApplied }: { onPromoApplied?: () => void }) {
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState(false);
+  const [promoSuccess, setPromoSuccess] = useState(false);
+
+  const handleApply = () => {
+    if (applyPromo(promoCode)) {
+      setPromoSuccess(true);
+      setPromoError(false);
+      onPromoApplied?.();
+    } else {
+      setPromoError(true);
+      setPromoSuccess(false);
+    }
+  };
+
+  if (promoSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium text-green-400 bg-green-500/10 border border-green-500/20"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        Promo code applied!
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="mt-2">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={promoCode}
+          onChange={(e) => { setPromoCode(e.target.value); setPromoError(false); }}
+          placeholder="Promo code"
+          className={`flex-1 px-4 py-2.5 bg-bg border rounded-xl text-sm text-white placeholder:text-muted/40 outline-none transition-all ${
+            promoError ? "border-red-500/50" : "border-border focus:border-accent/50"
+          }`}
+        />
+        <button
+          type="button"
+          onClick={handleApply}
+          disabled={!promoCode.trim()}
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            promoCode.trim()
+              ? "bg-accent/20 text-accent hover:bg-accent/30"
+              : "bg-border text-muted/30 cursor-not-allowed"
+          }`}
+        >
+          Apply
+        </button>
+      </div>
+      {promoError && (
+        <p className="text-xs text-red-400 mt-1.5 text-center">Invalid promo code</p>
       )}
     </div>
   );

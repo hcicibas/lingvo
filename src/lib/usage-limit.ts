@@ -1,4 +1,5 @@
 const STORAGE_KEY = "lingvo_usage";
+const PROMO_KEY = "lingvo_promo";
 
 interface UsageData {
   date: string;
@@ -31,5 +32,24 @@ export function incrementUsage(): void {
 }
 
 export function hasReachedLimit(): boolean {
+  if (hasValidPromo()) return false;
   return getUsage().count >= 3;
+}
+
+export function applyPromo(code: string): boolean {
+  if (code.toLowerCase().trim() === "free") {
+    try {
+      localStorage.setItem(PROMO_KEY, "free");
+    } catch {}
+    return true;
+  }
+  return false;
+}
+
+export function hasValidPromo(): boolean {
+  try {
+    return localStorage.getItem(PROMO_KEY) === "free";
+  } catch {
+    return false;
+  }
 }

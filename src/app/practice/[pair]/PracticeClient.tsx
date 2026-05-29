@@ -161,6 +161,7 @@ export default function PracticeClient({
             onStart={generateSentences}
             loading={loading}
             limitReached={limitReached}
+            onPromoApplied={() => setLimitReached(false)}
           />
           {error && (
             <div className="max-w-2xl mx-auto px-4 -mt-12 mb-8">
