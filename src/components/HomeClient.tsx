@@ -147,6 +147,10 @@ export default function HomeClient() {
           targetLanguage={targetLanguage}
           nativeLanguage={nativeLanguage}
           onComplete={() => setAppState("result")}
+          onQuit={() => {
+            setSentences([]);
+            setAppState("setup");
+          }}
         />
       )}
 

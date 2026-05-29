@@ -6,6 +6,8 @@ export interface UIStrings {
   changeLevel: string;
   wellDone: string;
   youCompleted: string;
+  quitPractice: string;
+  home: string;
 }
 
 const translations: Record<string, UIStrings> = {
@@ -17,6 +19,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Seviye Değiştir",
     wellDone: "Harika, {name}!",
     youCompleted: "{level} seviyesini tamamladın",
+    quitPractice: "Pratikten Çık",
+    home: "Ana Sayfa",
   },
   en: {
     showTranslation: "Show Translation",
@@ -26,6 +30,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Change Level",
     wellDone: "Well done, {name}!",
     youCompleted: "You completed {level} level",
+    quitPractice: "Quit Practice",
+    home: "Home",
   },
   de: {
     showTranslation: "Übersetzung anzeigen",
@@ -35,6 +41,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Stufe ändern",
     wellDone: "Gut gemacht, {name}!",
     youCompleted: "Du hast Stufe {level} abgeschlossen",
+    quitPractice: "Übung beenden",
+    home: "Startseite",
   },
   fr: {
     showTranslation: "Afficher la traduction",
@@ -44,6 +52,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Changer de niveau",
     wellDone: "Bravo, {name} !",
     youCompleted: "Tu as terminé le niveau {level}",
+    quitPractice: "Quitter",
+    home: "Accueil",
   },
   es: {
     showTranslation: "Mostrar traducción",
@@ -53,6 +63,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Cambiar nivel",
     wellDone: "¡Bien hecho, {name}!",
     youCompleted: "Completaste el nivel {level}",
+    quitPractice: "Salir",
+    home: "Inicio",
   },
   it: {
     showTranslation: "Mostra traduzione",
@@ -62,6 +74,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Cambia livello",
     wellDone: "Ben fatto, {name}!",
     youCompleted: "Hai completato il livello {level}",
+    quitPractice: "Esci",
+    home: "Home",
   },
   pt: {
     showTranslation: "Mostrar tradução",
@@ -71,6 +85,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Mudar nível",
     wellDone: "Muito bem, {name}!",
     youCompleted: "Você completou o nível {level}",
+    quitPractice: "Sair",
+    home: "Início",
   },
   ru: {
     showTranslation: "Показать перевод",
@@ -80,6 +96,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Изменить уровень",
     wellDone: "Отлично, {name}!",
     youCompleted: "Вы завершили уровень {level}",
+    quitPractice: "Выйти",
+    home: "Главная",
   },
   ar: {
     showTranslation: "إظهار الترجمة",
@@ -89,6 +107,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "تغيير المستوى",
     wellDone: "أحسنت، {name}!",
     youCompleted: "لقد أكملت المستوى {level}",
+    quitPractice: "خروج",
+    home: "الرئيسية",
   },
   zh: {
     showTranslation: "显示翻译",
@@ -98,6 +118,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "更改级别",
     wellDone: "做得好，{name}！",
     youCompleted: "你完成了 {level} 级别",
+    quitPractice: "退出练习",
+    home: "首页",
   },
   ja: {
     showTranslation: "翻訳を表示",
@@ -107,6 +129,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "レベルを変更",
     wellDone: "よくできました、{name}！",
     youCompleted: "{level} レベルを完了しました",
+    quitPractice: "練習を終了",
+    home: "ホーム",
   },
   ko: {
     showTranslation: "번역 보기",
@@ -116,6 +140,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "레벨 변경",
     wellDone: "잘했어요, {name}!",
     youCompleted: "{level} 레벨을 완료했습니다",
+    quitPractice: "연습 종료",
+    home: "홈",
   },
   nl: {
     showTranslation: "Vertaling tonen",
@@ -125,6 +151,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Niveau wijzigen",
     wellDone: "Goed gedaan, {name}!",
     youCompleted: "Je hebt niveau {level} voltooid",
+    quitPractice: "Stoppen",
+    home: "Home",
   },
   pl: {
     showTranslation: "Pokaż tłumaczenie",
@@ -134,6 +162,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Zmień poziom",
     wellDone: "Świetnie, {name}!",
     youCompleted: "Ukończyłeś poziom {level}",
+    quitPractice: "Zakończ",
+    home: "Strona główna",
   },
   sv: {
     showTranslation: "Visa översättning",
@@ -143,6 +173,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Byt nivå",
     wellDone: "Bra jobbat, {name}!",
     youCompleted: "Du klarade nivå {level}",
+    quitPractice: "Avsluta",
+    home: "Hem",
   },
   no: {
     showTranslation: "Vis oversettelse",
@@ -152,6 +184,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Bytt nivå",
     wellDone: "Bra jobbet, {name}!",
     youCompleted: "Du fullførte nivå {level}",
+    quitPractice: "Avslutt",
+    home: "Hjem",
   },
   da: {
     showTranslation: "Vis oversættelse",
@@ -161,6 +195,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Skift niveau",
     wellDone: "Godt klaret, {name}!",
     youCompleted: "Du gennemførte niveau {level}",
+    quitPractice: "Afslut",
+    home: "Hjem",
   },
   el: {
     showTranslation: "Εμφάνιση μετάφρασης",
@@ -170,6 +206,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Αλλαγή επιπέδου",
     wellDone: "Μπράβο, {name}!",
     youCompleted: "Ολοκλήρωσες το επίπεδο {level}",
+    quitPractice: "Έξοδος",
+    home: "Αρχική",
   },
   he: {
     showTranslation: "הצג תרגום",
@@ -179,6 +217,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "שנה רמה",
     wellDone: "!כל הכבוד, {name}",
     youCompleted: "{level} השלמת את רמה",
+    quitPractice: "יציאה",
+    home: "דף הבית",
   },
   hi: {
     showTranslation: "अनुवाद दिखाएँ",
@@ -188,6 +228,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "स्तर बदलें",
     wellDone: "शाबाश, {name}!",
     youCompleted: "आपने {level} स्तर पूरा किया",
+    quitPractice: "अभ्यास छोड़ें",
+    home: "होम",
   },
   fa: {
     showTranslation: "نمایش ترجمه",
@@ -197,6 +239,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "تغییر سطح",
     wellDone: "!آفرین، {name}",
     youCompleted: "شما سطح {level} را تکمیل کردید",
+    quitPractice: "خروج",
+    home: "صفحه اصلی",
   },
   ro: {
     showTranslation: "Arată traducerea",
@@ -206,6 +250,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Schimbă nivelul",
     wellDone: "Bravo, {name}!",
     youCompleted: "Ai completat nivelul {level}",
+    quitPractice: "Ieșire",
+    home: "Acasă",
   },
   uk: {
     showTranslation: "Показати переклад",
@@ -215,6 +261,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Змінити рівень",
     wellDone: "Чудово, {name}!",
     youCompleted: "Ви завершили рівень {level}",
+    quitPractice: "Вийти",
+    home: "Головна",
   },
   cs: {
     showTranslation: "Zobrazit překlad",
@@ -224,6 +272,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Změnit úroveň",
     wellDone: "Výborně, {name}!",
     youCompleted: "Dokončili jste úroveň {level}",
+    quitPractice: "Ukončit",
+    home: "Domů",
   },
   hu: {
     showTranslation: "Fordítás megjelenítése",
@@ -233,6 +283,8 @@ const translations: Record<string, UIStrings> = {
     changeLevel: "Szint váltása",
     wellDone: "Szép munka, {name}!",
     youCompleted: "Teljesítetted a(z) {level} szintet",
+    quitPractice: "Kilépés",
+    home: "Főoldal",
   },
 };
 

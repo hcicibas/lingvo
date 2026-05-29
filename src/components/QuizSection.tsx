@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Language } from "@/constants/languages";
 import { getUIStrings } from "@/constants/uiTranslations";
@@ -17,6 +17,7 @@ interface QuizSectionProps {
   targetLanguage: Language;
   nativeLanguage: Language;
   onComplete: () => void;
+  onQuit: () => void;
 }
 
 export default function QuizSection({
@@ -24,6 +25,7 @@ export default function QuizSection({
   targetLanguage,
   nativeLanguage,
   onComplete,
+  onQuit,
 }: QuizSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
@@ -42,18 +44,75 @@ export default function QuizSection({
     window.speechSynthesis.speak(utterance);
   }, [current.target, targetLanguage.code]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < total - 1) {
       setCurrentIndex((i) => i + 1);
       setShowTranslation(false);
     } else {
       onComplete();
     }
-  };
+  }, [currentIndex, total, onComplete]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1);
+      setShowTranslation(false);
+    }
+  }, [currentIndex]);
+
+  const handleRightArrow = useCallback(() => {
+    if (!showTranslation) {
+      setShowTranslation(true);
+    } else {
+      handleNext();
+    }
+  }, [showTranslation, handleNext]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        handleRightArrow();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        handlePrev();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleRightArrow, handlePrev]);
 
   return (
     <section className="min-h-screen flex items-center py-20 px-4">
       <div className="max-w-2xl mx-auto w-full">
+        {/* Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center justify-between mb-4"
+        >
+          <button
+            type="button"
+            onClick={onQuit}
+            className="flex items-center gap-1.5 text-sm text-muted hover:text-white transition-colors group"
+          >
+            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            {t.quitPractice}
+          </button>
+          <a
+            href="/"
+            className="flex items-center gap-1.5 text-sm text-muted hover:text-white transition-colors group"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" />
+            </svg>
+            {t.home}
+          </a>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -181,6 +181,10 @@ export default function PracticeClient({
           targetLanguage={targetLanguage}
           nativeLanguage={nativeLanguage}
           onComplete={() => setAppState("result")}
+          onQuit={() => {
+            setSentences([]);
+            setAppState("setup");
+          }}
         />
       )}
 
